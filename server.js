@@ -75,7 +75,7 @@ oscServer.on("message", function (oscMsg, timeTag, info) {
             break;
         }
       });
-      devicePair.setSensorConfiguration(sensorConfiguration);
+      insolePair.setSensorConfiguration(sensorConfiguration);
       break;
     case "resetGameRotation":
       BS.InsoleSides.forEach((side) => {
@@ -100,7 +100,7 @@ oscServer.on("message", function (oscMsg, timeTag, info) {
 
 oscServer.open();
 
-const devicePair = BS.DevicePair.shared;
+const insolePair = BS.DevicePair.insoles;
 
 const quaternions = {
   left: new THREE.Quaternion(),
@@ -147,7 +147,7 @@ let sendQuaternionAsEuler = false;
 let includePressureSensors = true;
 
 oscServer.on("ready", function () {
-  devicePair.addEventListener("deviceSensorData", (event) => {
+  insolePair.addEventListener("deviceSensorData", (event) => {
     const { side, sensorType } = event.message;
     let args;
     switch (sensorType) {
@@ -228,7 +228,10 @@ oscServer.on("ready", function () {
           },
           {
             type: "f",
-            value: event.message.pressure.normalizedSum > 0.01 ? event.message.pressure.normalizedCenter?.y || 0 : 0,
+            value:
+              event.message.pressure.normalizedSum > 0.01
+                ? event.message.pressure.normalizedCenter?.y || 0
+                : 0,
           },
         ];
         if (includePressureSensors) {
